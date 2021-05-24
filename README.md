@@ -1,5 +1,6 @@
 # grid-demo
 
+A very, very, very ugly demo for testing vue-grid-layout and dynamic form design.
 ## Project setup
 ```
 yarn install
