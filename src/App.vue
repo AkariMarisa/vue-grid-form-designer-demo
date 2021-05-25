@@ -8,8 +8,8 @@
         <grid-layout
           ref="gridlayout"
           :layout.sync="layout"
-          :col-num="1"
-          :row-height="30"
+          :col-num="2"
+          :row-height="40"
           :is-draggable="true"
           :is-resizable="true"
           :is-mirrored="false"
@@ -25,6 +25,7 @@
             :h="item.h"
             :i="item.i"
             :key="item.i"
+            :isResizable="true"
           >
             <!-- {{ item.i }} -->
             <!-- <b-form-input placeholder="Enter email" required></b-form-input> -->
@@ -52,6 +53,7 @@
           unselectable="on"
           :component-type="n % 2 === 1 ? 'input' : 'button'"
         >
+          <div class="mask"></div>
           <b-form-input v-if="n % 2 === 1" placeholder="input"></b-form-input>
           <b-button v-else>button</b-button>
         </div>
@@ -255,12 +257,20 @@ export default {
 </script>
 
 <style>
+/* .grid .vue-grid-item {
+  height: 100% !important;
+} */
+
 .grid .vue-grid-item.vue-grid-placeholder {
   background: green;
+  /* height: 100% !important; */
+  border-radius: 0.5rem;
 }
 
 .grid .vue-grid-item:not(.vue-grid-placeholder) {
-  border: #000 1px solid;
+  /* border: #000 1px solid; */
+  min-height: auto !important;
+  z-index: 2;
 }
 </style>
 
@@ -319,5 +329,20 @@ export default {
 
 .component-row {
   margin: 0.5rem;
+  cursor: move;
+  position: relative;
+}
+
+.component-row > * {
+  width: 14rem;
+  height: 2.3rem;
+}
+
+.component-row > *:not(.mask) {
+  z-index: -1;
+}
+
+.mask {
+  position: absolute;
 }
 </style>

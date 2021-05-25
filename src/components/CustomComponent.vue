@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div ref="container"></div>
+  <div style="width: 100%; height: 100%; position: relative;">
+    <div ref="container" style="width: 100%; height: 100%; position: absolute; z-index: -1;"></div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <b-button>{{content}}</b-button>
+  <b-button variant="primary" style="width: 100%;">{{content}}</b-button>
 </template>
 
 <script>
