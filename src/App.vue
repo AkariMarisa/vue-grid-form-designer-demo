@@ -296,6 +296,7 @@ export default {
   position: fixed;
   top: 0;
   right: 0;
+  z-index: 100;
 }
 
 .components-menu-toggle {
