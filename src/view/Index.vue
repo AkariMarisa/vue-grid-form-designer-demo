@@ -7,6 +7,7 @@
 
     <div class="toolbar">
       <b-button @click="addItem">Add item</b-button>
+      <b-button @click="addItemNew">Add item New</b-button>
       <b-button @click="dumpItems">Dump items</b-button>
     </div>
 
@@ -15,7 +16,8 @@
     </div>
 
     <div class="grid">
-      <section class="grid-stack"></section>
+      <div class="grid-stack">
+      </div>
     </div>
 
     <!-- 右边的弹出控件菜单 -->
@@ -37,6 +39,8 @@
         </div>
       </div>
     </div>
+
+    <div class="block"></div>
   </div>
 </template>
 
@@ -48,6 +52,7 @@ import "gridstack/dist/gridstack.min.css";
 import "gridstack/dist/h5/gridstack-dd-native";
 import "gridstack/dist/gridstack-extra.css";
 import Vue from "vue";
+
 export default {
   components: { CustomComponent },
   data() {
@@ -55,37 +60,64 @@ export default {
       gridEl: null,
       itemsString: "",
       count: 0,
+      widgetsList: [
+        { text: "Vegetables", width: "2", height: "2", title: "one" },
+        { text: "Cheese", width: "2", height: "4", title: "two" },
+        {
+          text: "Whatever else humans are supposed to eat",
+          width: "4",
+          height: "2",
+          title: "three",
+        },
+      ],
     };
   },
   mounted() {
-    let grid = GridStack.init({
-      acceptWidgets: true,
-      float: false,
-      cellHeight: "5rem",
-      column: 2,
-      dragIn: ".components-menu-list .component-row .grid-stack-item",
-      dragInOptions: {
-        helper: this.cloneNode,
-      },
-      minRow: 1,
-      removable: ".trash",
-    });
-
-    this.gridEl = grid;
-
-    grid.on("dragstart", function(e, el) {
-      console.log(e, el);
-      document.getElementsByClassName("trash")[0].classList.add("show");
-    });
-    grid.on("dragstop", function(e, el) {
-      console.log(e, el);
-      document.getElementsByClassName("trash")[0].classList.remove("show");
-    });
-
+    this.initGridStack();
   },
   methods: {
-    cloneNode(e) {
-      return e.target.cloneNode(true);
+    initGridStack() {
+      let grid = GridStack.init({
+        acceptWidgets: true,
+        float: false,
+        cellHeight: "5rem",
+        column: 2,
+        dragIn: ".components-menu-list .component-row .grid-stack-item",
+        dragInOptions: {
+          helper: "clone",
+        },
+        minRow: 1,
+        removable: ".trash",
+      });
+
+      this.gridEl = grid;
+
+      let that = this;
+
+      grid.on("dragstart", function(e, el) {
+        console.log(e, el);
+        document.getElementsByClassName("trash")[0].classList.add("show");
+      });
+      grid.on("dragstop", function(e, el) {
+        console.log(e, el);
+        document.getElementsByClassName("trash")[0].classList.remove("show");
+      });
+      grid.on("dropped", function(e, previousWidget, newWidget) {
+        console.log(
+          "Removed widget that was dragged out of grid:",
+          previousWidget
+        );
+        console.log("Added widget in dropped grid:", newWidget);
+        if (newWidget) {
+          // 添加了新控件
+          // 为每个控件绑定一个点击事件
+          newWidget.el.onclick = function() {
+            console.log("element clicked");
+          };
+
+          that.addItemNew();
+        }
+      });
     },
     addItem() {
       const comp = Vue.extend(CustomComponent);
@@ -94,13 +126,18 @@ export default {
 
       this.gridEl.addWidget(b.$el, { w: 1, h: 1 });
     },
+    addItemNew() {
+      this.widgetsList.push({
+        text: "Cheese",
+        width: "2",
+        height: "4",
+        title: "two",
+      });
+    },
     dumpItems() {
       const items = this.gridEl.save();
       this.itemsString = JSON.stringify(items);
     },
-    modifyComponent(e) {
-      console.log(e)
-    }
   },
 };
 </script>
